@@ -2,13 +2,18 @@
 
 LOGS_FOLDER="$HOME/collect-logs"
 
+
+
 set -e
 main() {
 # prepare folder
     cd $LOGS_FOLDER
-    [ ! -d ".git" ] && git init
-    git clean -x -d -f
-    git checkout .
+    if [ ! -d ".git" ]; then
+        git init
+    else
+        git clean -x -d -f
+        git checkout .
+    fi
     cd $OLDPWD
 
 # call log collector one by one.
