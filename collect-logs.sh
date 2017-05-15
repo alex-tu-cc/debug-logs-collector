@@ -76,7 +76,12 @@ get_network_manager_logs() {
 
 get_wwan_card_logs() {
     # check firmware version
-    [[ -e /dev/cdc-wdm0 ]] && mbimcli -d /dev/cdc-wdm0 --query-device-caps --verbose > "$LOGS_FOLDER/mbimcli-d-cdc-wdm0.log" || true
+    [[ !  -e $(which mbimcli) ]] && sudo apt-get install -y libmbim-utils
+    if ls /dev/cdc-wdm* ;then
+        for node in $(ls /dev/cdc-wdm*); do
+            sudo mbimcli -d $node --query-device-caps --verbose > "$LOGS_FOLDER/mbimcli-d-$(basename $node).log" || true
+        done
+    fi
 }
 
 get_manifest_from_recovery() {
