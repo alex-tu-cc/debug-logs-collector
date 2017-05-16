@@ -1,0 +1,15 @@
+Source: debug-logs-collector
+Section: misc
+Priority: optional
+Maintainer: alextu <alex.tu@canonical.com>
+Build-Depends: debhelper (>= 9), dh-modaliases
+Standards-Version: 3.9.7
+Vcs-Git: https://github.com/alex-tu-cc/collect-logs.git
+Vcs-Browser: https://launchpad.net/debug-logs-collector
+
+Package: debug-logs-collector
+Architecture: all
+Depends: git, ${misc:Depends}
+XB-Modaliases: ${modaliases}
+Description: debug-logs-collector
+ debug-logs-collector

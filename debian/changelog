@@ -1,0 +1,11 @@
+debug-logs-collector (1.1) xenial; urgency=medium
+
+  * packa as debian package.
+
+ -- Alex Tu <alex.tu@canonical.com>  Tue, 16 May 2017 14:19:36 +0800
+
+debug-logs-collector (1) xenial; urgency=medium
+
+  * init for collect all logs
+
+ -- Alex Tu <alex.tu@canonical.com>  Mon, 15 May 2017 15:24:29 +0800
