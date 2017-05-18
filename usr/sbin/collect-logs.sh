@@ -1,18 +1,20 @@
 #!/bin/bash
 
 LOGS_FOLDER="$HOME/collect-logs"
-
+set -x
 set -e
 main() {
 # prepare folder
-    cd $LOGS_FOLDER
+    cd "$LOGS_FOLDER"
+    git config --get user.name || git config --global user.name "$0"
+    git config --get user.email || git config --global user.email "$0@example.com"
     if [ ! -d ".git" ]; then
         git init
     else
         git clean -x -d -f
-        git checkout .
+        git checkout . || true
     fi
-    cd $OLDPWD
+    cd "$OLDPWD"
 
 # call log collector one by one.
     lspci -vvvnn > "$LOGS_FOLDER/lspci-vvvnn.log"
@@ -39,7 +41,7 @@ main() {
     ps -ef > "$LOGS_FOLDER/ps-ef.log"
 
 # commit logs.
-    cd $LOGS_FOLDER
+    cd "$LOGS_FOLDER"
     git add .
     git commit -m "$(git status)"
 #    tar Jcvf "$LOGS_FOLDER.tar.xz $LOGS_FOLDER"
@@ -73,11 +75,16 @@ get_network_manager_logs() {
 }
 
 get_wwan_card_logs() {
+    #get modem hardware information
+    if [[ -e $(which mmcli) ]]; then
+        rm -f "$LOGS_FOLDER/mmcli.log"
+        printf "\n\$mmcli\n"; mmcli -L; printf "\n\$mmcli -m 1"; mmcli -m 1 >> "$LOGS_FOLDER/mmcli.log"
+    fi
     # check firmware version
     [[ !  -e $(which mbimcli) ]] && sudo apt-get install -y libmbim-utils
     if ls /dev/cdc-wdm* ;then
-        for node in $(ls /dev/cdc-wdm*); do
-            sudo mbimcli -d $node --query-device-caps --verbose > "$LOGS_FOLDER/mbimcli-d-$(basename $node).log" || true
+        for node in /dev/cdc-wdm*; do
+            sudo mbimcli -d "$node" --query-device-caps --verbose > "$LOGS_FOLDER/mbimcli-d-$(basename $node).log" || true
         done
     fi
 }
@@ -96,13 +103,14 @@ get_manifest_from_recovery() {
 }
 
 get_system_logs() {
-    find /var/log/syslog | cpio -p --make-directories $LOGS_FOLDER
-    find /var/log/Xorg.0.log | cpio -p --make-directories $LOGS_FOLDER
+    find /var/log/syslog | cpio -p --make-directories "$LOGS_FOLDER"
+    find /var/log/Xorg.0.log | cpio -p --make-directories "$LOGS_FOLDER"
     journalctl > "$LOGS_FOLDER/journalctl.log"
 }
 
 
 get_xinput_logs() {
+    [[ -z $DISPLAY ]] && export DISPLAY=:0
     xinput > "$LOGS_FOLDER/xinput.log"
 }
 
@@ -144,11 +152,11 @@ do
 
   esac    # --- end of case ---
 done
-shift $(($OPTIND-1))
+shift $((OPTIND-1))
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-    mkdir -p $LOGS_FOLDER
-    exec > >(tee -i $LOGS_FOLDER/collect-logs.log)
+    mkdir -p "$LOGS_FOLDER"
+    exec > >(tee -i "$LOGS_FOLDER/collect-logs.log")
     main "$@"
 
 fi
