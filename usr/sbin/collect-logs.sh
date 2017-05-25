@@ -78,7 +78,8 @@ get_wwan_card_logs() {
     #get modem hardware information
     if [[ -e $(which mmcli) ]]; then
         rm -f "$LOGS_FOLDER/mmcli.log"
-        printf "\n\$mmcli\n"; mmcli -L; printf "\n\$mmcli -m 1"; mmcli -m 1 >> "$LOGS_FOLDER/mmcli.log"
+        # [TODO] to distinguish number 
+        printf "\n\$mmcli\n"; mmcli -L; printf "\n\$mmcli -m 1"; mmcli -m 1 >> "$LOGS_FOLDER/mmcli.log" || true
     fi
     # check firmware version
     [[ !  -e $(which mbimcli) ]] && sudo apt-get install -y libmbim-utils
