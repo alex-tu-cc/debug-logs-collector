@@ -36,6 +36,7 @@ main() {
     get_manifest_from_recovery || true
     get_xinput_logs
     get_system_logs
+    get_etc_default_files
 
     dpkg -l > "$LOGS_FOLDER/dpkg-l.log"
     ps -ef > "$LOGS_FOLDER/ps-ef.log"
@@ -107,6 +108,10 @@ get_system_logs() {
     find /var/log/syslog | cpio -p --make-directories "$LOGS_FOLDER"
     find /var/log/Xorg.0.log | cpio -p --make-directories "$LOGS_FOLDER"
     journalctl > "$LOGS_FOLDER/journalctl.log"
+}
+
+get_etc_default_files(){
+    find /etc/default | cpio -p --make-directories "$LOGS_FOLDER" || true
 }
 
 
