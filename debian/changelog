@@ -1,3 +1,9 @@
+debug-logs-collector (1.3.5) xenial; urgency=medium
+
+  * add some more message
+
+ -- Alex Tu <alex.tu@canonical.com>  Wed, 14 Jun 2017 00:39:55 +0800
+
 debug-logs-collector (1.3.4) xenial; urgency=medium
 
   * add /etc/default files
