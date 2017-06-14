@@ -31,6 +31,8 @@ main() {
     DISPLAY=:0 xrandr --verbose > "$LOGS_FOLDER/xrandr--verbose.log"
     update-alternatives --display x86_64-linux-gnu_gl_conf > "$LOGS_FOLDER/update-alternatives--display-x86_64-linux-gnu_gl_conf.log"
     ldconfig -p > "$LOGS_FOLDER/ldconfig-p.log"
+    lsblk -a > "$LOGS_FOLDER/lsblk-a.log"
+    sudo lshw -html > "$LOGS_FOLDER/lshw.html"
 
     get_bios_info
     get_audio_logs
