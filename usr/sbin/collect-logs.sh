@@ -27,6 +27,10 @@ main() {
     udevadm info -e > "$LOGS_FOLDER/udevadm-info-e.log"
     uname -a > "$LOGS_FOLDER/uname-a.log"
     uname -a > "$LOGS_FOLDER/uname-a.log"
+    get_files_with_path /proc/acpi/wakeup /etc/X11
+    DISPLAY=:0 xrandr --verbose > "$LOGS_FOLDER/xrandr--verbose.log"
+    update-alternatives --display x86_64-linux-gnu_gl_conf > "$LOGS_FOLDER/update-alternatives--display-x86_64-linux-gnu_gl_conf.log"
+    ldconfig -p > "$LOGS_FOLDER/ldconfig-p.log"
 
     get_bios_info
     get_audio_logs
@@ -47,6 +51,10 @@ main() {
     git commit -m "$(git status)"
 #    tar Jcvf "$LOGS_FOLDER.tar.xz $LOGS_FOLDER"
 #    echo "all logs are in $LOGS_FOLDER.tar.xz "
+}
+
+get_files_with_path() {
+    find $@ | cpio -p --make-directories "$LOGS_FOLDER"
 }
 
 get_bios_info() {
@@ -102,6 +110,9 @@ get_manifest_from_recovery() {
     sudo umount /mnt
     # check mount | grep "\/ type ext4" to know if currently use sda or nvme?
     # mount /dev/${recovery-partition} /mnt | cat /mnt/bto.xml
+
+    # get build stamp as well
+    find /etc/buildstamp |  cpio -p --make-directories "$LOGS_FOLDER"
 }
 
 get_system_logs() {
